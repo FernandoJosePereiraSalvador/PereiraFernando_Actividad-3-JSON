@@ -12,56 +12,62 @@ import java.io.IOException;
 import org.json.JSONException;
 
 /**
- *
+ * Esta clase ejecuta el programa principal y contiene métodos para leer y mostrar información de archivos JSON.
+ * 
  * @author Fernando
  */
 public class Actividad3 {
-
+    
+    /**
+     * El método principal que inicia el programa.
+     * 
+     * @param args Argumentos de la línea de comandos. Debe contener uno o dos argumentos.
+     */
     public static void main(String[] args) {
         
-        if (args.length == 1) {
-            
-            String separador = File.separator;
-            
-            String filename = "src" + separador + "main" + separador + "java" + separador + "com" + separador + "mycompany" + separador + "actividad3" + separador + "jsonmc-master" + separador + args[0]; // Reemplaza con la ruta correcta a tu archivo JSON
-
-            File carpeta = new File(filename);
-
-            if (carpeta.exists() && carpeta.isDirectory()) {
-                File[] archivos = carpeta.listFiles();
-
-                for (File archivo : archivos) {
-                    JSONObject jsonObject = LeerJSON(archivo.getAbsolutePath());
-                    MostrarPersonas(jsonObject);
-                }
-            }else{
-                System.out.println("Error: No se ha encontrado la carpeta");
-            }
-        } else if(args.length == 2) {
-            
-            String separador = File.separator;
-            
-            String filename = "src" + separador + "main" + separador + "java" + separador + "com" + separador + "mycompany" + separador + "actividad3" + separador + "jsonmc-master" + separador + args[0] + separador + args[1];
-
-            File carpeta = new File(filename);
-
-            if (carpeta.exists() && carpeta.isDirectory()) {
-                File[] archivos = carpeta.listFiles();
-
-                for (File archivo : archivos) {
-                    JSONObject jsonObject = LeerJSON(archivo.getAbsolutePath());
-                    MostrarPeliculas(jsonObject);
-                }
-            }else{
-                System.out.println("Error: No se ha encontrado la carpeta");
-            }
-        }else{
-            System.out.println("Numero de argumentos incorrecto");
+        switch (args.length) {
+            case 1 ->                 {
+                    String separador = File.separator;
+                    String filename = "src" + separador + "main" + separador + "java" + separador + "com" + separador + "mycompany" + separador + "actividad3" + separador + "jsonmc-master" + separador + args[0]; // Reemplaza con la ruta correcta a tu archivo JSON
+                    File carpeta = new File(filename);
+                    if (carpeta.exists() && carpeta.isDirectory()) {
+                        File[] archivos = carpeta.listFiles();
+                        
+                        for (File archivo : archivos) {
+                            JSONObject jsonObject = LeerJSON(archivo.getAbsolutePath());
+                            MostrarPersonas(jsonObject);
+                        }
+                    }else{
+                        System.out.println("Error: No se ha encontrado la carpeta");
+                    }                      }
+            case 2 ->                 {
+                    String separador = File.separator;
+                    String filename = "src" + separador + "main" + separador + "java" + separador + "com" + separador + "mycompany" + separador + "actividad3" + separador + "jsonmc-master" + separador + args[0] + separador + args[1];
+                    File carpeta = new File(filename);
+                    if (carpeta.exists() && carpeta.isDirectory()) {
+                        File[] archivos = carpeta.listFiles();
+                        
+                        for (File archivo : archivos) {
+                            JSONObject jsonObject = LeerJSON(archivo.getAbsolutePath());
+                            MostrarPeliculas(jsonObject);
+                        }
+                    }else{
+                        System.out.println("Error: No se ha encontrado la carpeta");
+                    }                      }
+            default -> System.out.println("Numero de argumentos incorrecto");
         }
 
     }
-
+    /**
+     * 
+     * Lee y parsea un archivo JSON desde la ubicación especificada.
+     * 
+     * @param filename La ruta completa del archivo JSON
+     * @return Un objeto JSONObject que representa el contenido del archivo JSON. 
+     *         Si hay un error al leer o parsear el archivo, se devuelve null.
+     */
     private static JSONObject LeerJSON(String filename) {
+        
         try {
             FileReader file = new FileReader(filename);
             StringBuilder myJson = new StringBuilder();
@@ -79,7 +85,11 @@ public class Actividad3 {
             return null;
         }
     }
-
+    
+    /**
+     * Muestra información de personas contenida en un objeto JSON.
+     * @param json El objeto JSON que contiene la información de la persona.
+     */
     private static void MostrarPersonas(JSONObject json) {
         
         String name = json.has("name") ? json.getString("name") : "Sin datos";
@@ -93,7 +103,12 @@ public class Actividad3 {
         System.out.println("Birthdate: " + birthdate);
         System.out.println("Birthplace: " + birthplace);
     }
-
+    
+    /**
+     * Muestra información de películas contenida en un objeto JSON.
+     * 
+     * @param json El objeto JSON que contiene la información de la película.
+     */
     private static void MostrarPeliculas(JSONObject json) {
         
         String name = json.getString("name");
