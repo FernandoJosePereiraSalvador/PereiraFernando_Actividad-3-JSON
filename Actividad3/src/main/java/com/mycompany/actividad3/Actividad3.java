@@ -8,7 +8,9 @@ import java.io.FileReader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 import org.json.JSONException;
 
 /**
@@ -27,9 +29,14 @@ public class Actividad3 {
         
         switch (args.length) {
             case 1 ->                 {
+                    // Verifica si se proporcionó un solo argumento.
+                    
+                    // Construye la ruta completa al archivo JSON utilizando el argumento proporcionado.
                     String separador = File.separator;
-                    String filename = "src" + separador + "main" + separador + "java" + separador + "com" + separador + "mycompany" + separador + "actividad3" + separador + "jsonmc-master" + separador + args[0]; // Reemplaza con la ruta correcta a tu archivo JSON
+                    String filename = "src" + separador + "main" + separador + "java" + separador + "com" + separador + "mycompany" + separador + "actividad3" + separador + "jsonmc-master" + separador + args[0];
                     File carpeta = new File(filename);
+                    
+                    // Si existe la carpeta pasamos todos los archivos a un [] los recorremos y leemos con LeerJSON y después mostramos los datos
                     if (carpeta.exists() && carpeta.isDirectory()) {
                         File[] archivos = carpeta.listFiles();
                         
@@ -37,13 +44,30 @@ public class Actividad3 {
                             JSONObject jsonObject = LeerJSON(archivo.getAbsolutePath());
                             MostrarPersonas(jsonObject);
                         }
+                        
+                        String puesto = args[0].substring(0, args[0].length() - 1);
+                        boolean crear = preguntarBoolean("¿Quiere crear un nuevo " + puesto + "?");
+                        
+                        while(crear){
+                            crearPersona(filename + separador);
+                            crear = preguntarBoolean("¿Quiere crear un nuevo " + puesto + "?");
+                        }
+                        
+                        System.out.println("Se ha cerrado el programa");
+                               
                     }else{
+                        // Si no se ha encontrado la carpeta
                         System.out.println("Error: No se ha encontrado la carpeta");
                     }                      }
             case 2 ->                 {
+                    // Verifica si se proporcionó dos argumentos
+                    
+                    // Construye la ruta completa al archivo JSON utilizando el argumento proporcionado.
                     String separador = File.separator;
                     String filename = "src" + separador + "main" + separador + "java" + separador + "com" + separador + "mycompany" + separador + "actividad3" + separador + "jsonmc-master" + separador + args[0] + separador + args[1];
                     File carpeta = new File(filename);
+                    
+                    // Si existe la carpeta pasamos todos los archivos a un [] los recorremos y leemos con LeerJSON y después mostramos los datos
                     if (carpeta.exists() && carpeta.isDirectory()) {
                         File[] archivos = carpeta.listFiles();
                         
@@ -52,6 +76,7 @@ public class Actividad3 {
                             MostrarPeliculas(jsonObject);
                         }
                     }else{
+                        // Si no se ha encontrado la carpeta
                         System.out.println("Error: No se ha encontrado la carpeta");
                     }                      }
             default -> System.out.println("Numero de argumentos incorrecto");
@@ -92,11 +117,13 @@ public class Actividad3 {
      */
     private static void MostrarPersonas(JSONObject json) {
         
+        // Extrae la información de personas del objeto JSON.
         String name = json.has("name") ? json.getString("name") : "Sin datos";
         String birthname = json.has("birthname") ? json.getString("birthname") : "Sin datos";
         String birthdate = json.has("birthdate") ? json.getString("birthdate") : "Sin datos";
         String birthplace = json.has("birthplace") ? json.getString("birthplace") : "Sin datos";
         
+        // Imprime la información
         System.out.println();
         System.out.println("Name: " + name);
         System.out.println("Birthname: " + birthname);
@@ -111,6 +138,7 @@ public class Actividad3 {
      */
     private static void MostrarPeliculas(JSONObject json) {
         
+        // Extrae la información de las películas del objeto JSON.
         String name = json.getString("name");
         int year = json.getInt("year");
         int runtime = json.getInt("runtime");
@@ -121,6 +149,7 @@ public class Actividad3 {
         JSONArray actors = json.getJSONArray("actors");
         String storyline = json.getString("storyline");
         
+        // Imprime los datos
         System.out.println("");
         System.out.println("Name: " + name);
         System.out.println("Year: " + year);
@@ -150,5 +179,58 @@ public class Actividad3 {
         System.out.println();
 
         System.out.println("Storyline: " + storyline);
+    }
+    
+    private static void crearPersona(String filename){
+        String name = preguntar("Introduce el name: ");
+        String birthname = preguntar("Introduce el birthname: ");
+        String birthdate = preguntar("Introduce el birthdate: ");
+        String birthplace = preguntar("Introduce el birthplace: ");
+        
+        JSONObject persona = new JSONObject();
+        
+        persona.put("name",name);
+        persona.put("birthname",birthname);
+        persona.put("birthdate",birthdate);
+        persona.put("birthplace",birthplace);
+        
+        try (FileWriter file = new FileWriter(filename + name + ".json")) {
+            file.write(persona.toString());
+            System.out.println("Archivo creado exitosamente.");
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+    
+    private static String preguntar(String mensaje) {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        
+        do {
+            System.out.print(mensaje + ": ");
+            input = scanner.nextLine().trim(); // trim() elimina espacios en blanco al principio y al final
+        } while (input.isEmpty()); // Continuar solicitando mientras el input esté vacío
+
+        return input;
+    }
+    
+    private static boolean preguntarBoolean(String mensaje) {
+        
+        Scanner scanner = new Scanner(System.in);
+        boolean inputValido = false;
+        boolean respuesta = false;
+
+        do {
+            System.out.print(mensaje + ": ");
+            String input = scanner.nextLine().trim().toLowerCase(); // trim() elimina espacios en blanco y toLowerCase() convierte a minúsculas
+            if (input.equals("true") || input.equals("false")) {
+                respuesta = Boolean.parseBoolean(input);
+                inputValido = true;
+            } else {
+                System.out.println("Por favor, ingresa 'true' o 'false'.");
+            }
+        } while (!inputValido);
+
+        return respuesta;
     }
 }
