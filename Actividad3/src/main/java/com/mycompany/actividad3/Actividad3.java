@@ -18,9 +18,12 @@ import org.json.JSONException;
 public class Actividad3 {
 
     public static void main(String[] args) {
-
+        
         if (args.length == 1) {
-            String filename = "D:\\Ciclo DAM\\Accesso a datos\\Unidad 1\\PereiraFernando_Actividad-3-JSON\\jsonmc-master\\" + args[0]; // Reemplaza con la ruta correcta a tu archivo JSON
+            
+            String separador = File.separator;
+            
+            String filename = "src" + separador + "main" + separador + "java" + separador + "com" + separador + "mycompany" + separador + "actividad3" + separador + "jsonmc-master" + separador + args[0]; // Reemplaza con la ruta correcta a tu archivo JSON
 
             File carpeta = new File(filename);
 
@@ -34,8 +37,11 @@ public class Actividad3 {
             }else{
                 System.out.println("Error: No se ha encontrado la carpeta");
             }
-        } else {
-            String filename = "D:\\Ciclo DAM\\Accesso a datos\\Unidad 1\\PereiraFernando_Actividad-3-JSON\\jsonmc-master\\movies" + args[1];
+        } else if(args.length == 2) {
+            
+            String separador = File.separator;
+            
+            String filename = "src" + separador + "main" + separador + "java" + separador + "com" + separador + "mycompany" + separador + "actividad3" + separador + "jsonmc-master" + separador + args[0] + separador + args[1];
 
             File carpeta = new File(filename);
 
@@ -46,7 +52,11 @@ public class Actividad3 {
                     JSONObject jsonObject = LeerJSON(archivo.getAbsolutePath());
                     MostrarPeliculas(jsonObject);
                 }
+            }else{
+                System.out.println("Error: No se ha encontrado la carpeta");
             }
+        }else{
+            System.out.println("Numero de argumentos incorrecto");
         }
 
     }
@@ -71,12 +81,13 @@ public class Actividad3 {
     }
 
     private static void MostrarPersonas(JSONObject json) {
-
-        String name = json.getString("name");
-        String birthname = json.getString("birthname");
-        String birthdate = json.getString("birthdate");
-        String birthplace = json.getString("birthplace");
-
+        
+        String name = json.has("name") ? json.getString("name") : "Sin datos";
+        String birthname = json.has("birthname") ? json.getString("birthname") : "Sin datos";
+        String birthdate = json.has("birthdate") ? json.getString("birthdate") : "Sin datos";
+        String birthplace = json.has("birthplace") ? json.getString("birthplace") : "Sin datos";
+        
+        System.out.println();
         System.out.println("Name: " + name);
         System.out.println("Birthname: " + birthname);
         System.out.println("Birthdate: " + birthdate);
@@ -84,6 +95,7 @@ public class Actividad3 {
     }
 
     private static void MostrarPeliculas(JSONObject json) {
+        
         String name = json.getString("name");
         int year = json.getInt("year");
         int runtime = json.getInt("runtime");
@@ -93,7 +105,8 @@ public class Actividad3 {
         JSONArray writers = json.getJSONArray("writer");
         JSONArray actors = json.getJSONArray("actors");
         String storyline = json.getString("storyline");
-
+        
+        System.out.println("");
         System.out.println("Name: " + name);
         System.out.println("Year: " + year);
         System.out.println("Runtime: " + runtime + " minutes");
